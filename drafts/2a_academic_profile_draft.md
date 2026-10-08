@@ -41,7 +41,15 @@ Techniques for building trustworthy systems have advanced greatly, including thr
 
 ## 2a2. Leadership and mentorship
 
-(to be written)
+**I strongly believe in collaborative and reproducible research.** I am involved in several efforts for open and reproducible science: I am General Chair of ACM REP 2026, chair artifact evaluation at SOSP 2026, and have served on the artifact evaluation committees of OSDI, PLDI, EuroSys and USENIX Security. In my group, we release all our systems as open-source software. I am also a member of the Technical Steering Committee of the Open Robust Compartmentalization Alliance, an industry–academia initiative under the Linux Foundation that aims to bring compartmentalization from research into widely used software, the very goal of ACCESS.
+
+Today, important problems can only be tackled through collaboration, and **I aim to pass this mindset on to my mentees**. I currently supervise two PhD students and co-host a Marie Skłodowska-Curie postdoctoral fellow with G. Smaragdakis. I give them access to my academic network, introduce them to my collaborators and encourage them to establish collaborations of their own. I meet my mentees weekly, both individually and as a group, so that each receives personal guidance while learning from the others' work. **My goal is not to find PhD students or postdocs, but to train independent scientists with whom I build long-standing collaborations.**
+
+I have also supervised more than ten MSc theses at TU Delft, KU Leuven and TU Braunschweig. My mentees have progressed in their careers: one of my MSc students at KU Leuven continued as a PhD student there, another at TU Delft continued as my own PhD student, and the postdoctoral fellow I co-host has obtained a faculty position at TU Delft.
+
+With a Vidi, I will expand my group with a PhD student and a postdoc working on complementary parts of ACCESS: program analysis to derive compartments, and isolation mechanisms to enforce them. They will work closely together, so that each learns from the other's expertise. I will prepare the postdoc for an independent career by having them co-supervise PhD and MSc students, lead parts of the project and write their own grant proposals.
+
+**I want my group to be an open and inclusive place where everyone feels safe to share ideas and mistakes.** We give each other honest, constructive feedback, my mentees present their own work at conferences, and they lead the papers they drive as first authors. I also encourage them to spend time at my collaborators' labs and in industry, as my own internships shaped my career.
 
 ## Sources (for our own fact-checking only – NOT in the form; the form only cites key outputs KO1–KO10)
 

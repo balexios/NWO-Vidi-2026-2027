@@ -121,6 +121,28 @@ x = zin.read("word/document.xml").decode("utf-8")
 x = insert_after_heading(x, "Section 2a2. Leadership and mentorship", P2)
 x = insert_after_heading(x, "Section 2a1. General academic profile", P1)
 
+
+# fill the "Word count (section 2a1 + 2a2)" field; NWO counts text inside figures too
+TOTAL = words(P1) + words(P2) + fig_words(P1) + fig_words(P2)
+k = x.find("<w:t>Word count (section 2a</w:t>")
+if k < 0:
+    sys.exit("Word-count field for 2a not found")
+c0 = x.rfind("<w:sdtContent>", 0, k) + len("<w:sdtContent>")
+c1 = x.find("</w:sdtContent>", k)
+x = x[:c0] + run(str(TOTAL)) + x[c1:]
+p = x.rfind("<w:showingPlcHdr/>", 0, c0)
+if p > x.rfind("<w:sdt>", 0, c0):  # drop placeholder flag of this field only
+    x = x[:p] + x[p + len("<w:showingPlcHdr/>"):]
+
+# 2b culture-and-standards box, from drafts/2b_key_outputs_draft.md (first paragraph of that section)
+md2b = open(f"{PROJ}/drafts/2b_key_outputs_draft.md", encoding="utf-8").read()
+CULTURE = md2b.split("## Culture and standards box", 1)[1].split("\n", 1)[1].strip().split("\n\n", 1)[0].replace("\n", " ")
+k = x.find("optional in max. 50 words]")
+m = re.compile(r"<w:p [^>]*>(<w:pPr>.*?</w:pPr>)</w:p>").search(x, x.find("<w:tc>", k))
+if not m or "<w:t" in m.group(0):
+    sys.exit("Culture box not found or not empty")
+x = x[:m.start()] + f"<w:p>{m.group(1)}{run(CULTURE)}</w:p>" + x[m.end():]
+
 rels = zin.read("word/_rels/document.xml.rels").decode("utf-8")
 ctypes = zin.read("[Content_Types].xml").decode("utf-8")
 IMG_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
