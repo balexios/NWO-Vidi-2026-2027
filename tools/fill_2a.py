@@ -57,6 +57,9 @@ def para_xml(text, ppr):
     if m:
         return ('<w:p><w:pPr><w:spacing w:after="120"/><w:jc w:val="center"/></w:pPr>'
                 + run(m.group(1), italic=True) + '</w:p>')
+    return f"<w:p>{ppr}{runs_xml(text)}</w:p>"
+
+def runs_xml(text):
     out = []
     for tok in re.split(r"(\*\*.+?\*\*|\[CHECK[^\]]*\])", text):
         if not tok:
@@ -67,7 +70,7 @@ def para_xml(text, ppr):
             out.append(run(tok, red=True))
         else:
             out.append(run(tok))
-    return f"<w:p>{ppr}{''.join(out)}</w:p>"
+    return "".join(out)
 
 def fig_words(ps):
     return sum(int(m.group(3) or 0) for m in map(IMG_RE.match, ps) if m)
@@ -143,6 +146,134 @@ if not m or "<w:t" in m.group(0):
     sys.exit("Culture box not found or not empty")
 x = x[:m.start()] + f"<w:p>{m.group(1)}{run(CULTURE)}</w:p>" + x[m.end():]
 
+# 2b key outputs, from the "## Key outputs" section of the 2b draft (### KO<n> blocks with "- Field: value" lines)
+def set_sdt(b, placeholder, value):
+    """Replace the content of the content control showing `placeholder` with `value`."""
+    i = b.find(f">{placeholder}</w:t>")
+    if i < 0:
+        sys.exit(f"Field not found: {placeholder!r}")
+    s0 = b.rfind("<w:sdt>", 0, i)
+    c0 = b.find("<w:sdtContent>", s0) + len("<w:sdtContent>")
+    c1 = b.find("</w:sdtContent>", i)
+    head = b[s0:c0].replace("<w:showingPlcHdr/>", "")
+    return b[:s0] + head + run(value) + b[c1:]
+
+def fill_after(b, label, text):
+    """Put `text` in the (empty) paragraph of the table cell after the cell holding `label`."""
+    i = b.find(f">{label}</w:t>")
+    tc = b.find("<w:tc>", i)
+    pe = b.find("</w:p>", tc)
+    if i < 0 or re.search(r"<w:t[ >]", b[tc:pe]):
+        sys.exit(f"Empty field after {label!r} not found")
+    return b[:pe] + runs_xml(text) + b[pe:]
+
+kos_md = md2b.split("## Key outputs", 1)[1].split("\n## ", 1)[0]
+parts = re.split(r"^### KO(\d+)\s*$", kos_md, flags=re.M)
+KOS = {int(n): dict(re.findall(r"^- ([A-Za-z0-9 ]+): (.+)$", body, re.M)) for n, body in zip(parts[1::2], parts[2::2])}
+MOTIV_WORDS = 0
+for n, f in sorted(KOS.items()):
+    i = x.find(f">Key output {n}<")
+    j = x.find(f">Key output {n + 1}<") if n < 10 else x.find(">Word count 2b")
+    b = x[i:j]
+    if f.get("Open Access") in ("Yes", "No"):
+        b = set_sdt(b, "Yes/No", f["Open Access"])
+    b = fill_after(b, "Reference:", f["Reference"])
+    url_xml = runs_xml(f["URL"])
+    if f.get("URL2"):  # second link to an open-access copy (allowed by the form)
+        url_xml += '<w:r><w:br/></w:r>' + runs_xml(f["URL2"])
+    ui = b.find(">URL:</w:t>"); tc = b.find("<w:tc>", ui); pe = b.find("</w:p>", tc)
+    if ui < 0 or re.search(r"<w:t[ >]", b[tc:pe]):
+        sys.exit("Empty field after 'URL:' not found")
+    b = b[:pe] + url_xml + b[pe:]
+    b = set_sdt(b, "Choose an output type", f["Type"])
+    inds = [s.strip() for s in f.get("Indicators", "").split(" ; ") if s.strip()]
+    for ph, val in zip(["Choose an indicator", "Optional: choose a second indicator",
+                        "Optional: choose a third indicator"], inds):
+        b = set_sdt(b, ph, val)
+    b = fill_after(b, "Motivation:", f["Motivation"])
+    MOTIV_WORDS += len(re.sub(r"\[CHECK[^\]]*\]", "", f["Motivation"]).replace("**", "").split())
+    x = x[:i] + b + x[j:]
+
+if KOS:  # 2b word-count field: motivations only (references, URLs, types and indicators excluded)
+    k = x.find(">Word count (section 2b ")
+    c0 = x.rfind("<w:sdtContent>", 0, k) + len("<w:sdtContent>")
+    c1 = x.find("</w:sdtContent>", k)
+    x = x[:c0] + run(str(MOTIV_WORDS)) + x[c1:]
+    p = x.rfind("<w:showingPlcHdr/>", 0, c0)
+    if p > x.rfind("<w:sdt>", 0, c0):
+        x = x[:p] + x[p + len("<w:showingPlcHdr/>"):]
+
+# 4d. Current appointment (user, 2026-10-09: 1.0 FTE contract, 40% research / 40% teaching / 20% management)
+CURRENT = {"position": "Assistant professor", "type": "Position: Permanent", "start": "15-9-2023",  # contract "Ingangsdatum"
+           "fte": "1.0", "research_fte": "0.4", "institution": "Delft University of Technology (TU Delft)"}
+a = x.find(">Current appointment<")
+r0 = x.find("</w:tr>", a) + len("</w:tr>")          # skip the header row
+r1 = x.find("</w:tr>", r0) + len("</w:tr>")
+row = set_sdt(x[r0:r1], "Please select from dropdown", CURRENT["position"])
+row = set_sdt(row, "Please select from dropdown)", CURRENT["type"])
+row = set_sdt(row, "Start date", CURRENT["start"])
+row = row.replace('<w:date><w:dateFormat w:val="d-M-yyyy"/>', '<w:date w:fullDate="2023-09-15T00:00:00Z"><w:dateFormat w:val="d-M-yyyy"/>', 1)
+cells = [m.start() for m in re.finditer(r"<w:tc>", row)]
+for col, val in reversed(list(zip([3, 4, 5], [CURRENT["fte"], CURRENT["research_fte"], CURRENT["institution"]]))):
+    pe = row.find("</w:p>", cells[col])
+    if re.search(r"<w:t[ >]", row[cells[col]:pe]):
+        sys.exit(f"4d cell {col} not empty")
+    row = row[:pe] + runs_xml(val) + row[pe:]
+x = x[:r0] + row + x[r1:]
+
+# Section 3 key words and section 4 details (2026-10-09; sources: CV, eScholarship, user). [CHECK ...] = red.
+KEYWORDS = "Compartmentalization, software security, isolation, dynamic analysis, operating systems"
+S4 = {"Title(s), initial(s), surname(s):": "Dr. A. Voulimeneas",
+      "University/College of higher education:": "University of California, Irvine (United States)",
+      "Thesis title:": "Building the Next Generation of Security Focused NVX Systems: Overcoming Limitations of N-Variant Execution",
+      "Host institution:": "Delft University of Technology (TU Delft)",
+      "Research group:": "Cybersecurity group, Department of Intelligent Systems, Faculty of Electrical Engineering, Mathematics and Computer Science"}
+SUPERVISOR = "Prof. M. Franz"
+PAST = {"position": "Postdoctoral researcher", "fte": "1.0", "research_fte": "1.0",  # user
+        "institution": "KU Leuven (Belgium)"}
+SIGN_NAME, SIGN_PLACE = "A. Voulimeneas", "Delft"
+
+# Section 3 title: whole title underlined (NWO rule), letters forming ACCESS in bold.
+TITLE = [("ACCESS – ", 0), ("A", 1), ("dvan", 0), ("c", 1), ("ed ", 0), ("C", 1), ("ompartm", 0), ("e", 1),
+         ("ntalization for ", 0), ("S", 1), ("ecure ", 0), ("S", 1), ("oftware", 0)]
+k = x.find(">Title:<"); c0 = x.find("<w:sdtContent>", k) + len("<w:sdtContent>"); c1 = x.find("</w:sdtContent>", c0)
+x = x[:c0] + "".join(run(t, bold=b).replace("<w:color ", '<w:u w:val="single"/><w:color ', 1) for t, b in TITLE) + x[c1:]
+x = set_sdt(x, "Key words separated by commas (same as in ISAAC)", KEYWORDS)
+IDEA = open(f"{PROJ}/drafts/3_research_idea_draft.md", encoding="utf-8").read().split("\n## Research idea\n", 1)[1].strip().replace("\n", " ")
+IDEA_WORDS = len(IDEA.split())
+x = set_sdt(x, "Research idea (same as ‘Abstract’ in ISAAC)", IDEA)
+k = x.rfind("<w:sdt>", 0, x.find(">Word count (section 3 "))
+x = x[:k] + set_sdt(x[k:], "excluding title and key words", str(IDEA_WORDS))
+for label, val in S4.items():
+    x = fill_after(x, label, val)
+k = x.find("Date of PhD award")                       # PhD award 12 June 2020 (user)
+x = x[:k] + set_sdt(x[k:], "Choose the date", "12-6-2020").replace(
+    '<w:date><w:dateFormat w:val="d-M-yyyy"/>', '<w:date w:fullDate="2020-06-12T00:00:00Z"><w:dateFormat w:val="d-M-yyyy"/>', 1)
+k = x.find(">Promotor(")                               # supervisor label is split over several runs
+tc = x.find("<w:tc>", k); pe = x.find("</w:p>", tc)
+assert not re.search(r"<w:t[ >]", x[tc:pe]), "supervisor cell not empty"
+x = x[:pe] + runs_xml(SUPERVISOR) + x[pe:]
+
+a = x.find(">Past appointments<")
+r0 = x.find("</w:tr>", a) + len("</w:tr>"); r1 = x.find("</w:tr>", r0) + len("</w:tr>")
+row = set_sdt(x[r0:r1], "Please select from dropdown", PAST["position"])
+for ph, shown, iso in (("date", "1-9-2020", "2020-09-01"), ("End date", "31-8-2023", "2023-08-31")):  # user
+    d = row.find(f">{ph}</w:t>"); s0 = row.rfind("<w:sdt>", 0, d)   # start-date placeholder is split: "S","tart ","date"
+    row = row[:s0] + set_sdt(row[s0:], ph, shown).replace(
+        '<w:date><w:dateFormat', f'<w:date w:fullDate="{iso}T00:00:00Z"><w:dateFormat', 1)
+cells = [m.start() for m in re.finditer(r"<w:tc>", row)]
+for col, val in reversed(list(zip([3, 4, 5], [PAST["fte"], PAST["research_fte"], PAST["institution"]]))):
+    pe = row.find("</w:p>", cells[col])
+    row = row[:pe] + runs_xml(val) + row[pe:]
+x = x[:r0] + row + x[r1:]
+
+e = x.find("xtension clause")
+x = x[:e] + set_sdt(x[e:], "Yes/No", "No")               # PhD 2020: within the Vidi window
+
+for label, val in (("Initial(s) and surname(s)</w:t>", SIGN_NAME), (">Place: </w:t>", SIGN_PLACE)):
+    k = x.find(label); pe = x.find("</w:p>", k)
+    x = x[:pe] + runs_xml(val) + x[pe:]
+
 rels = zin.read("word/_rels/document.xml.rels").decode("utf-8")
 ctypes = zin.read("[Content_Types].xml").decode("utf-8")
 IMG_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
@@ -169,4 +300,7 @@ print(f"Done. 2a1: {w1} words, 2a2: {w2} words, total {w1 + w2} / 1200 (red [CHE
 if f1 or f2:
     print(f"Including text inside figures ({f1 + f2} words): 2a1: {w1 + f1}, 2a2: {w2 + f2}, "
           f"total {w1 + w2 + f1 + f2} / 1200.")
+if KOS:
+    print(f"2b: key outputs {sorted(KOS)} filled, motivations {MOTIV_WORDS} / 700 words (red [CHECK] notes excluded).")
 print(f"Backup of previous version: {DOCX}.bak")
+print(f"3: research idea {IDEA_WORDS} / 150 words.")

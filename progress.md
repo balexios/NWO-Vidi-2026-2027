@@ -251,3 +251,61 @@ The old paragraphs in the .md "parking lot" can be mined for this.
 - 2026-10-08: 2b culture box filled (41/50 words): conference papers are the main output; author order (first = lead, last = supervising senior). Deliberately no venue names or 'Big Four/Five' (rank/reputation terms not allowed). Text lives in drafts/2b_key_outputs_draft.md; tools/fill_2a.py now also fills this box.
 - 2026-10-08: Culture box extended to 49/50 words (adds 'open-source software and industry collaborations are also recognised outputs'). User wants ORCA as a key output, following Lilika's Veni (other-vinis/Veni pre-proposal form 2025_revised.pdf = Lilika's; KO8 F+Cube mentoring, KO9 PC membership). Draft ORCA KO10 in drafts/2b_key_outputs_draft.md; proposed to drop ReMon (old KO10). Pending user confirmation + [CHECK] facts. If adopted, add '(KO10)' after ORCA in 2a2 and cut one word to stay at 1200.
 - 2026-10-08: ORCA-as-KO is ON HOLD (user: not yet); ReMon stays KO10 for now. Culture box rewritten (50/50 words, in docx): conference papers on large team-built prototypes; author order (first = lead, usually PhD student; last = supervisor); CVEs as public evidence of real-world impact. Artifact-badge point dropped by user. KO7 (Moneta) motivation should cite CVE numbers to match the box.
+- 2026-10-09: 2a2 now mentions the UC Irvine mentee (A. Rösti, co-supervised with M. Franz from MSc to PhD graduation; first author of KO4/A8). To fit, trimmed: 'very' goal; 'involved in several efforts for' -> 'contribute to'; network sentence shortened; 'so that each learns' -> 'and learn from each other's'; dropped 'they'. 2a now 1108 text / 1196 incl. figure.
+- 2026-10-09: 2b KO1–KO9 drafted in drafts/2b_key_outputs_draft.md (references + DOIs from Crossref, type, indicators, motivations ~60 words each) and filled into the docx by tools/fill_2a.py (now also fills KO blocks + 2b word count; motivations 530/700). Many red [CHECK]s: open access status (only KO7/NDSS set to Yes), your role in KO3/KO6/KO7, dMVX key result, Moneta CVE numbers, Dutch media outlet for KO4, lazypoline reuse, 'first system' claim KO1, KO5 published title. KO10 (ReMon) left empty; ORCA alternative is in the parking lot.
+- 2026-10-09: ORCA is now KO10 (ReMon dropped; noted in 2b parking lot). KO10 entry in drafts/2b_key_outputs_draft.md (Type: Outreach/public engagement/advocacy, other; OA No; URL [CHECK]). 2a2 now cites '(KO10)' after ORCA (2a = 1197 incl. figure). DOCX NOT YET UPDATED (Word was open) - run check_2a_sync.py (will show the expected KO10 diff) then fill_2a.py.
+- 2026-10-09: KO10 URL = https://orca-lf.org/ (homepage lists the 5-member TSC incl. the user, with NYU, MIT Lincoln Lab, U Florida, U Utah/US Ignite). KO10 motivation updated accordingly (in .md; docx pending, Word was open).
+- 2026-10-09: Sharing is Caring (old KO3) replaced by IBTpoline (USENIX ATC 2026, accepted; Gaidis, Patmanidis, Shapiro, Portokalidis, Voulimeneas, Kemerlis). KOs renumbered in first-citation order: KO1 dMon, KO2 dMVX, KO3 A8, KO4 PKU sandbox, KO5 Partial MVX, KO6 Moneta, KO7 lazypoline, KO8 K23, KO9 IBTpoline, KO10 ORCA. 2a1 'compatibility ... shared memory (KO3)' clause removed; tools sentence now (KO7–KO9). IBTpoline URL is a TODO for the user. DOCX PENDING (Word open).
+- 2026-10-09: KO9 IBTpoline motivation: user proposed the core idea, supervised TU Delft MSc student I. Patmanidis (2nd author); invited by Brown/IMDEA because of syscall-interposition expertise. DOCX PENDING (Word open).
+- 2026-10-09: KO1 confirmed by user as the first such system; motivation now says 'the first N-variant execution system...'. Docx updated.
+- 2026-10-09: KO2 motivation rewritten: novel OS abstractions cut distributed MVX overhead to single-digit %; results motivated a DARPA proposal co-written with PhD advisor, funded, supported PhD of KO3's first author. Indicators: Originality/novelty + grant directly related. Funder confirmed: ONR (HONEY-MON), not DARPA. DOCX PENDING (Word open).
+- 2026-10-09: Docx updated with KO2 (ONR) changes. 2a 1183/1200 incl. figure; 2b motivations 693/700 - remaining [CHECK]s will need cuts elsewhere.
+- 2026-10-09: KO3 (A8) motivation: user OK with 'covered by Dutch media' without naming the outlet; [CHECK] removed. Docx updated (2b 692/700).
+- 2026-10-09: KO9 IBTpoline: no DOI/pages before deadline -> reference ends 'Accepted, to appear.'; Open Access set to No (must be freely accessible by deadline to mark Yes); URL = public preprint/USENIX page if available, else leave empty. Keep acceptance email as proof (NWO may ask). DOCX PENDING (Word open).
+- 2026-10-09: KO5 (Partial MVX) role: user designed the compartmentalization approach and co-supervised the first author. 2b motivations now 699/700 - FULL; any further additions need cuts.
+- 2026-10-09: KO7 (lazypoline): user proposed the idea and contributed to the implementation; open-source/reuse sentence and 'Reuse' indicator dropped.
+- 2026-10-09: KO6 Moneta facts from paper (~/Downloads/2025-218-paper.pdf): 10 previously unknown bugs (5 NVIDIA, 3 AMD Radeon, 2 ARM Mali), all vendor-confirmed, 5 CVEs. User contributed the system call interposition part. STYLE: always 'system call interposition' (no hyphen) - applied everywhere. Trims to fit 2b (697/700): KO3 'recognising both...' removed; KO4 ORCA description -> '(KO10)'; KO9 'which modern Linux systems increasingly enable' removed; KO10 'which sets its technical direction' removed; KO6 'operating-system kernel' -> 'kernel'. Docx updated.
+- 2026-10-09: Removed 'billions of devices/phones and computers' overclaim (user). 2a1 now: '...security-critical vulnerabilities in NVIDIA, AMD and ARM drivers (KO6).' KO6: 'GPU drivers run with kernel privileges but are hard to test.' DOCX PENDING (Word open); 2a ~1179, 2b ~694.
+- 2026-10-09: KO10 ORCA motivation rewritten: user is a founding member, elected to the 5-member TSC; TSC organises talks, fosters academia-industry collaborations, works to accelerate adoption. Invited-talk sentence dropped from KO10 (talks still in KO4/KO8). 2b 693/700.
+- 2026-10-09: 2a2 ORCA sentence: 'founding member of ORCA (KO10) and was elected to its Technical Steering Committee. This industry–academia initiative...'
+
+## 2026-10-09 — "Dutch media" → "a Dutch online magazine"
+- KO3 coverage was in an online magazine; wording changed in 2a1 and KO3 motivation (2a and 2b md + Word).
+- Named the outlet: "the Dutch trade magazine Security Management" (securitymanagement.nl, 3 Jun 2025, "Baanbrekend onderzoek versterkt cybersecurity").
+
+## 2026-10-09 — Open access
+- KO1–KO5, KO7, KO8 set to Open Access: Yes; second URL (URL2) added pointing to website PDFs (KO2: arXiv), all checked to load and match titles. fill_2a.py supports URL2 (line break in URL cell). 2b count unchanged (697; counts motivations only, URLs excluded).
+
+## 2026-10-09 — Open access
+- KO1–KO5, KO7, KO8 set to Open Access: Yes; second link (URL2 in the md) added under the DOI, pointing to the PDFs on the user's website (KO2: arXiv). All links checked to load and match the paper titles.
+- fill_2a.py supports URL2 (line break in the URL cell). First version reused variable `i` and corrupted the docx; fixed and validated (XML OK).
+- 2b count unchanged at 697: only motivations are counted, so URLs, references, types and indicators are excluded.
+- 2a2: "ACM REP 2026" spelled out as "the 2026 ACM Conference on Reproducibility and Replicability" (2a now 1191/1200).
+- 2a2 Vidi paragraph: "They will work closely together and with my international collaborators, learning from each other's expertise." (no names, per user).
+- 2a2 Vidi sentence: "with my other students and collaborators" (dropped "international").
+- KO7 motivation: no longer implies lazypoline was an MSc thesis project; now "guided the first author, a KU Leuven PhD student whom I had previously supervised during their MSc."
+- KO8: added invited talk at Ghent University (2b 698/700).
+- 4d current appointment added to fill_2a.py: Assistant professor, Position: Permanent, 1.0 FTE, 0.4 FTE research (40/40/20 research/teaching/management, per user), TU Delft. Start date still needed. Applied to Word.
+- 4d: TU Delft start date 15-9-2023 (contract "Ingangsdatum", per user).
+
+## 2026-10-09 — Section 3 key words and section 4 filled (fill_2a.py)
+- Key words (proposed): Compartmentalization, software security, isolation, dynamic analysis, operating systems.
+- 4a Dr. A. Voulimeneas; 4b UC Irvine, Prof. M. Franz, thesis title from eScholarship; PhD award date still open.
+- 4c TU Delft, Cybersecurity group, Dept. Intelligent Systems, EEMCS.
+- 4d past row: Postdoctoral researcher, KU Leuven; dates and FTEs still [CHECK].
+- Extension clause: No. Signature: A. Voulimeneas, Delft; date left for submission day.
+- Not touched: research idea (user), fourth research-field placeholder, title formatting (only acronym letters underlined; NWO asks for underlined title; hyphen vs en dash).
+- 4b PhD award date: 12-6-2020 (user).
+- 4d KU Leuven postdoc: 1-9-2020 to 31-8-2023 (user). FTEs still [CHECK].
+- 4d KU Leuven postdoc: 1-9-2020 to 31-8-2023, 1.0 FTE, 1.0 FTE research (user). Section 4d complete.
+- Section 3 title: whole title underlined (NWO rule), acronym letters A,c,C,e,S,S bold (user asked for bold).
+- Title dash changed to en dash ("ACCESS – Advanced…") to match the contract-office email; use the same in ISAAC.
+
+## 2026-10-09 — Section 3 research idea
+- Drafted from user text, cut to 149/150 words: drafts/3_research_idea_draft.md (source of truth); fill_2a.py fills it and the section 3 word count. Must be identical to ISAAC abstract. (First run corrupted the docx through a wrong sdt search start; fixed and validated.)
+
+## 2026-10-09 — Literature list for referees (optional annex)
+- 10 items chosen by user (7 external + KO8, KO4, KO5): drafts/literature_list_draft.md -> tools/fill_literature.py -> drafts/Vidi-2026-Literature-list-Voulimeneas.docx (NWO template). Save as PDF and upload in ISAAC.
+- OpenBSD paper: Ai, Zhang, Lefeuvre, Seltzer, CCS 2026 (accepted; from first author site). IUBIK co-authored by Kemerlis/Gaidis (KO9 co-authors).
+- Lit. list [5]: authors and ACM reference (CCS 2026, The Hague, DOI 10.1145/3830454.3846768) from the camera-ready PDF; preprint link https://owl.eu.com/papers/openbsd-civs-ccs26.pdf added.
+- Lit. list: all links checked; removed CCS 2026 DOI for [5] (not yet registered), kept author PDF link.
